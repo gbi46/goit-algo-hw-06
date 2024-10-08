@@ -32,10 +32,10 @@ class Record:
         raise ValueError("Phone was not found")
     
     def edit_phone(self, old_phone, new_phone):
-        for phone in self.phones:
-            if phone.value == old_phone:
-                phone.value = new_phone
-                return
+        if self.find_phone(old_phone):
+            self.add_phone(new_phone)
+            self.remove_phone(old_phone)
+            return
         raise ValueError("Phone was not found")
 
     def find_phone(self, phone):
@@ -80,7 +80,7 @@ book.delete("Joio")
 print(book)
 
 join = book.find("Join")
-join.edit_phone("0500000380", "0500000330")
+join.edit_phone("0500000380", "0500000945")
 print(join)
 
 found_phone = join.find_phone("0500000420")
