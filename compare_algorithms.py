@@ -97,3 +97,47 @@ def benchmark(text: str, pattern: str, fn, number: int = 800) -> float:
     fn(text, pattern)
     t = timeit.timeit(lambda: fn(text, pattern), number=number)
     return t / number
+
+def main():
+    p1 = Path("/mnt/data/стаття 1.txt")
+    p2 = Path("/mnt/data/стаття 2.txt")
+    text1 = p1.read_text(encoding="utf-8", errors="ignore")
+    text2 = p2.read_text(encoding="utf-8", errors="ignore")
+
+    existing1 = choose_existing_substring(text1, 40)
+    existing2 = choose_existing_substring(text2, 40)
+    fake1 = "___UNLIKELY_SUBSTRING___1___"
+    fake2 = "___UNLIKELY_SUBSTRING___2___"
+
+    rows = []
+    def run_suite(text_label: str, text: str, exists_pat: str, fake_pat: str, repeats: int = 2):
+        for algo_name, fn in ALGORITHMS.items():
+            times = [benchmark(text, exists_pat, fn) for _ in range(repeats)]
+            rows.append({
+                "text": text_label, "pattern_type": "existing",
+                "pattern_sample": exists_pat[:50] + ("…" if len(exists_pat) > 50 else ""),
+                "algorithm": algo_name, "avg_seconds": sum(times)/len(times),
+            })
+            times = [benchmark(text, fake_pat, fn) for _ in range(repeats)]
+            rows.append({
+                "text": text_label, "pattern_type": "fake",
+                "pattern_sample": fake_pat,
+                "algorithm": algo_name, "avg_seconds": sum(times)/len(times),
+            })
+
+    run_suite("стаття 1", text1, existing1, fake1, repeats=2)
+    run_suite("стаття 2", text2, existing2, fake2, repeats=2)
+
+    df = pd.DataFrame(rows).sort_values(["text","pattern_type","avg_seconds"]).reset_index(drop=True)
+    out_csv = Path("/mnt/data/results_substring_benchmark.csv")
+    df.to_csv(out_csv, index=False)
+
+    print("Existing patterns used:")
+    print(f"  стаття 1: {existing1!r}")
+    print(f"  стаття 2: {existing2!r}")
+    print("\nResults (fastest first per case):")
+    print(df.to_string(index=False))
+    print(f"\nSaved CSV -> {out_csv}")
+
+if __name__ == "__main__":
+    main()
