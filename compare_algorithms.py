@@ -92,3 +92,8 @@ def choose_existing_substring(s: str, length: int = 32) -> str:
     if len(cand) < 8:
         cand = " ".join(s[:length].split())
     return cand
+
+def benchmark(text: str, pattern: str, fn, number: int = 800) -> float:
+    fn(text, pattern)
+    t = timeit.timeit(lambda: fn(text, pattern), number=number)
+    return t / number
