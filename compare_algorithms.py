@@ -75,3 +75,9 @@ def rabin_karp(text: str, pattern: str, d: int = 256, q: int = 101_377) -> int:
             if t < 0:
                 t += q
     return -1
+
+ALGORITHMS = {
+    "Boyer–Moore (Horspool)": boyer_moore,
+    "Knuth–Morris–Pratt": kmp,
+    "Rabin–Karp": rabin_karp,
+}
