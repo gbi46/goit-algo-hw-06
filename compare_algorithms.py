@@ -1,5 +1,4 @@
 from pathlib import Path
-from statistics import mean
 
 import pandas as pd
 import re, timeit
@@ -77,7 +76,7 @@ def rabin_karp(text: str, pattern: str, d: int = 256, q: int = 101_377) -> int:
     return -1
 
 ALGORITHMS = {
-    "Boyer–Moore (Horspool)": boyer_moore,
+    "Boyer–Moore": boyer_moore,
     "Knuth–Morris–Pratt": kmp,
     "Rabin–Karp": rabin_karp,
 }
@@ -99,8 +98,8 @@ def benchmark(text: str, pattern: str, fn, number: int = 800) -> float:
     return t / number
 
 def main():
-    p1 = Path("/mnt/data/стаття 1.txt")
-    p2 = Path("/mnt/data/стаття 2.txt")
+    p1 = Path("article_1.txt")
+    p2 = Path("article_2.txt")
     text1 = p1.read_text(encoding="utf-8", errors="ignore")
     text2 = p2.read_text(encoding="utf-8", errors="ignore")
 
@@ -125,16 +124,16 @@ def main():
                 "algorithm": algo_name, "avg_seconds": sum(times)/len(times),
             })
 
-    run_suite("стаття 1", text1, existing1, fake1, repeats=2)
-    run_suite("стаття 2", text2, existing2, fake2, repeats=2)
+    run_suite("article_1", text1, existing1, fake1, repeats=2)
+    run_suite("article_2", text2, existing2, fake2, repeats=2)
 
     df = pd.DataFrame(rows).sort_values(["text","pattern_type","avg_seconds"]).reset_index(drop=True)
-    out_csv = Path("/mnt/data/results_substring_benchmark.csv")
+    out_csv = Path("results_substring_benchmark.csv")
     df.to_csv(out_csv, index=False)
 
     print("Existing patterns used:")
-    print(f"  стаття 1: {existing1!r}")
-    print(f"  стаття 2: {existing2!r}")
+    print(f"  article_1: {existing1!r}")
+    print(f"  article_2: {existing2!r}")
     print("\nResults (fastest first per case):")
     print(df.to_string(index=False))
     print(f"\nSaved CSV -> {out_csv}")
