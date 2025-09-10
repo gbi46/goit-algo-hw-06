@@ -81,3 +81,14 @@ ALGORITHMS = {
     "Knuth–Morris–Pratt": kmp,
     "Rabin–Karp": rabin_karp,
 }
+
+def choose_existing_substring(s: str, length: int = 32) -> str:
+    start = max(0, len(s) // 3)
+    m = re.search(r"\S", s[start:])
+    if m:
+        start += m.start()
+    cand = s[start:start+length]
+    cand = " ".join(cand.split())
+    if len(cand) < 8:
+        cand = " ".join(s[:length].split())
+    return cand
