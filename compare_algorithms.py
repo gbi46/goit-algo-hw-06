@@ -128,15 +128,15 @@ def main():
     run_suite("article_2", text2, existing2, fake2, repeats=2)
 
     df = pd.DataFrame(rows).sort_values(["text","pattern_type","avg_seconds"]).reset_index(drop=True)
-    out_csv = Path("results_substring_benchmark.csv")
-    df.to_csv(out_csv, index=False)
+    out_xlsx = Path("results_substring_benchmark.xlsx")
+    df.to_excel(out_xlsx, index=False)
 
     print("Existing patterns used:")
     print(f"  article_1: {existing1!r}")
     print(f"  article_2: {existing2!r}")
     print("\nResults (fastest first per case):")
     print(df.to_string(index=False))
-    print(f"\nSaved CSV -> {out_csv}")
+    print(f"\nSaved XLSX -> {out_xlsx}")
 
 if __name__ == "__main__":
     main()
