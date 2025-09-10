@@ -53,3 +53,25 @@ def kmp(text: str, pattern: str) -> int:
             else:
                 i += 1
     return -1
+
+def rabin_karp(text: str, pattern: str, d: int = 256, q: int = 101_377) -> int:
+    n, m = len(text), len(pattern)
+    if m == 0:
+        return 0
+    if m > n:
+        return -1
+    h = pow(d, m-1, q)
+    p = 0
+    t = 0
+    for i in range(m):
+        p = (d * p + ord(pattern[i])) % q
+        t = (d * t + ord(text[i])) % q
+    for s in range(n - m + 1):
+        if p == t:
+            if text[s:s+m] == pattern:
+                return s
+        if s < n - m:
+            t = (d * (t - ord(text[s]) * h) + ord(text[s + m])) % q
+            if t < 0:
+                t += q
+    return -1
